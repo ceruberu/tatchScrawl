@@ -1,9 +1,10 @@
 <template>
   <div class='list'>
     <div class="infographic">
-      <p>{{name}}</p>
+      <img :src="picture.url" /><p>{{name}}</p>
       <p>Number of Followers {{fanCount}}</p>
       <p>Number of Posts {{numberPosts}}</p>
+      <doughnut :data="type" />
       <table id="numberGraphic">
         <tr>
           <th></th>
@@ -64,14 +65,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Doughnut from '@/components/Doughnut';
 
 export default {
   name: 'List',
+  components: {
+    Doughnut,
+  },
   computed: {
     ...mapGetters([
       'allPost',
       'fanCount',
       'name',
+      'picture',
     ])
   },
   methods: {
@@ -85,7 +91,6 @@ export default {
   data() {
     console.log(this.$store);
     const posts = this.$store.getters.allPost;
-    const fanCount = this.$store.getters.fanCount;
     const numberPosts = posts.length;
     let numberLike = 0;
     let numberLove = 0;

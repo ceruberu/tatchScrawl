@@ -1,6 +1,7 @@
 <template>
   <div class='userInput'>
     https://www.facebook.com/<input v-model="pageURL" placeholder="Page URL"> 
+    <br> 
     Start<Datepicker v-model="start" name="start"></Datepicker>
     End <Datepicker v-model="end" name="end"></Datepicker>
     <button v-on:click="check"> Search </button>
@@ -33,12 +34,13 @@ export default {
   methods: {
     check (){
       const { search, start, end, pageURL, $http } = this;
-      FB.api(`/${pageURL}?fields=fan_count,name`, response => {  
+      FB.api(`/${pageURL}?fields=fan_count,name,picture`, response => {  
         if(!response || response.error){
           alert('Error Occurerd');
         } else {
           this.$store.commit('UPDATE_FAN_COUNT', response.fan_count);
           this.$store.commit('UPDATE_PAGE_NAME', response.name);
+          this.$store.commit('UPDATE_PAGE_PICTURE', response.picture.data);
           search();
         }
       });
