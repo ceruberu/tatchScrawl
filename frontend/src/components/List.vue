@@ -1,12 +1,7 @@
 <template>
   <div class='list'>
-    <div class="infographic" v-for="page in pages" v-bind:key="page.name">
-      <img :src="page.picture.url" /><p>{{page.name}}</p>
-      <p>{{page.fanCount}} Followers</p>
-      <p>{{page.posts.length}} Posts</p>
-      <p>{{roundThree(page.posts.length/(Math.floor(( Date.parse(time.end) - Date.parse(time.start) ) / 86400000)))}} Posts/day</p>
-      <doughnut :data="page.summary" />
-    </div>
+    <router-view></router-view>
+
     <!-- <table id="numberGraphic">
       <tr>
         <th></th>
@@ -89,7 +84,8 @@
         <td>Event</td>
         <td>{{round(summary.event.like/summary.event.count)}}</td>
         <td>{{round(summary.event.love/summary.event.count)}}</td>
-        <td>{{round(summary.event.haha/summary.event.count)}}</td>
+        <td>{{round(summary.event.haha/summary.event.count)}}</td>ep
+         
         <td>{{round(summary.event.sad/summary.event.count)}}</td>
         <td>{{round(summary.event.angry/summary.event.count)}}</td>
         <td>{{round(summary.event.wow/summary.event.count)}}</td>
@@ -113,7 +109,7 @@
         <td>Post Shares</td>
       </tr>
       <tr>
-        <td>Total</td>
+        <td>Total</td>  
         <td>{{roundThreeMultiply((totalReactions.reactions+totalReactions.shares+totalReactions.comments)/fanCount)}}%</td>
         <td>{{roundThreeMultiply((totalReactions.reactions/fanCount))}}%</td>
         <td>{{roundThreeMultiply((totalReactions.comments/fanCount))}}%</td>
@@ -167,13 +163,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Doughnut from '@/components/Doughnut';
 
 export default {
   name: 'List',
-  components: {
-    Doughnut,
-  },
+
   computed: {
     ...mapGetters([
       'pages',
@@ -196,11 +189,18 @@ export default {
 
 <style scoped>
 .list {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.profiles {
   display: flex;
   flex: 1;
 }
 
-.infographic {
+.profile {
   display: flex;
   flex: 1;
   flex-direction: column;

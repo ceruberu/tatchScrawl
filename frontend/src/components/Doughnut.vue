@@ -7,7 +7,7 @@ export default {
   mounted () {
     const { photo, video, status, link, event } = this.data;
     this.renderChart({
-      labels: ['Photo', 'Video', 'Status', 'Link', 'Event'],
+      labels: ['Photo ', 'Video', 'Status', 'Link  '],
       datasets: [
         {
           backgroundColor: [
@@ -16,10 +16,10 @@ export default {
             '#00D8FF',
             '#DD1B16'
           ],
-          data: [photo.count, video.count, status.count, link.count, event.count]
+          data: [photo.count, video.count, status.count, link.count]
         }
       ]
-    }, {responsive: true, maintainAspectRatio: false})
+    }, {responsive: false, maintainAspectRatio: false})
   }
 }
 </script>

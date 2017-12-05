@@ -1,5 +1,6 @@
 <template>
   <div class='userInput'> 
+    <div class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
     <div class='pagesInput'>
       <div class='numberControl'>
         <div class='inactive' v-if="pageUrls.length == 1">-</div>
@@ -12,23 +13,16 @@
       </div>
     </div>
     <br> 
-    Start<Datepicker v-model="start" name="start"></Datepicker>
-    End <Datepicker v-model="end" name="end"></Datepicker>
+    Start<Datepicker v-model="time.start" name="start"></Datepicker>
+    End <Datepicker v-model="time.end" name="end"></Datepicker>
     <button v-on:click="check"> Search </button>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import { mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
-
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth();
-const date = today.getDate();
-const start = new Date(year - 1, month, date);
-const end = new Date(year, month, date, 23, 59, 59);
-
 export default {
   name: 'UserInput',
   components: {
@@ -38,16 +32,18 @@ export default {
     ...mapGetters([
       'numberPage',
       'pages',
+      'time',
     ]),
   },
   data() {
     return {
-      start, 
-      end, 
-      pageUrls: [{ value: '' }],
+      pageUrls: [{ value: 'jooxth' }],
     };
   },
   methods: {
+    customFormatter(date){
+      return moment(date).toDate();
+    },
     changeNumberPage(sign){
       if(sign == 'minus'){
         this.pageUrls.pop();
@@ -85,7 +81,8 @@ export default {
       })
     },
     promisifyPost(pageUrl, index){
-      const { start, end, $store } = this;
+      const { $store, time } = this;
+      const { start, end } = time;
       return new Promise((resolve, reject) => {
         let list = [];
         function dateToTimestamp (date){
@@ -102,11 +99,12 @@ export default {
             FB.api(response.paging.next, getFullPosts)
           }
         }
-        FB.api(`/${pageUrl}/posts?fields=shares,comments.limit(0).summary(true),message,created_time,full_picture,type,reactions.type(LIKE).summary(total_count).limit(0).as(like),reactions.type(LOVE).summary(total_count).limit(0).as(love),reactions.type(WOW).summary(total_count).limit(0).as(wow),reactions.type(HAHA).summary(total_count).limit(0).as(haha),reactions.type(SAD).summary(total_count).limit(0).as(sad),reactions.type(ANGRY).summary(total_count).limit(0).as(angry)&until=${dateToTimestamp(end)}&since=${dateToTimestamp(start)}&limit=100`, getFullPosts);
+        FB.api(`/${pageUrl}/posts?fields=permalink_url,source,shares,comments.limit(0).summary(true),message,created_time,full_picture,type,reactions.type(LIKE).summary(total_count).limit(0).as(like),reactions.type(LOVE).summary(total_count).limit(0).as(love),reactions.type(WOW).summary(total_count).limit(0).as(wow),reactions.type(HAHA).summary(total_count).limit(0).as(haha),reactions.type(SAD).summary(total_count).limit(0).as(sad),reactions.type(ANGRY).summary(total_count).limit(0).as(angry)&until=${dateToTimestamp(end)}&since=${dateToTimestamp(start)}&limit=100`, getFullPosts);
       })
     },
     search(){
-      const { pageUrls, $router, promisifyPost, $store } = this;
+      const { time, pageUrls, $router, promisifyPost, $store } = this;
+      const { start, end } = time;
       let postPromises = [];
       for (let i in pageUrls){
         postPromises.push(promisifyPost(pageUrls[i].value, i));
@@ -117,12 +115,8 @@ export default {
             index: i,
           })
         }
-        $store.commit('UPDATE_TIME', {
-          start,
-          end,
-        })
         console.log(this.pages, " ALL DONE SUM");
-        $router.push('List');
+        $router.push('list/profile');
       }, reason => {
         console.log(reason);
       })

@@ -2,12 +2,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import axios from 'axios';
 import Vue from 'vue';
+import VueGoodTable from 'vue-good-table';
 import App from './App';
 import store from './store';
 import router from './router';
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
+Vue.use(VueGoodTable);
 
 /* eslint-disable no-new */
 new Vue({

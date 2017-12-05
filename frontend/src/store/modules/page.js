@@ -30,11 +30,18 @@ class Summary {
   }
 }
 
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth();
+const date = today.getDate();
+const start = new Date(year - 1, month, date);
+const end = new Date(year, month, date, 23, 59, 59);
+
 // initial state
 const state = {
   pageUrls: [{ value: '' }],
   pages: [],
-  time: {},
+  time: { start, end },
 };
 
 // getters
@@ -91,6 +98,7 @@ const mutations = {
     state.pages[data.index].summary = { total: totalReactions, ...summary };
   },
   [UPDATE_TIME](state, data) {
+    console.log(data);
     state.time = { ...data };
   },
 };
